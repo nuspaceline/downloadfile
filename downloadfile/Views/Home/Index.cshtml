@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+<button type="button" onclick="downloadFile()">test btn</button>
+
+@section Scripts{
+<script>
+    function downloadFile(){
+         fetch("./Home/Export")
+        .then(response =>{
+            response.blob().then( b =>{
+                let file = window.URL.createObjectURL(b);
+                let a = document.createElement('a');
+                a.href = file;
+                let filename = getfilename(response);
+                a.download = filename;
+                a.click();
+            });
+        });
+    }
+
+    function getfilename(res){
+        var disposition = res.headers.get('Content-Disposition');
+        if (disposition && disposition.indexOf('attachment') !== -1) {
+            var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+            var matches = filenameRegex.exec(disposition);
+            if (matches != null && matches[1]) {
+                return filename = matches[1].replace(/['"]/g, '');
+            }
+        }
+    }
+</script>
+}
